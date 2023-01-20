@@ -1,7 +1,7 @@
 users_id_count    = 1
 bookings_id_count = 1
 
-credentials       = {}
+credentials       = {"phone_number": 00, "password": 00, "logged": True}
 
 users_database    = {}
 bookings_database = {}
@@ -129,15 +129,44 @@ def myBookings():
         print("Please Login before you confirm!")
         display()
 
-    for booking in bookings_database[credentials["phone_number"]]:
+    if not bookings_database.get(credentials.get("phone_number")):
+        print("No Bookings yet!")
+        display()
+
+    for booking in bookings_database.get(credentials.get("phone_number")):
         print(booking)
+
+    display()
+
+def deleteBooking():
+
+    if not credentials.get("logged"):
+        print("Please login before you confirm!")
+        display()
+
+    for booking in bookings_database.get(credentials["phone_number"]):
+        print(booking)
+
+    booking_id = input("Please Enter the ID of the booking to be deleted: ")
+
+    if not booking_id:
+        print("PLease Enter a valid ID!")
+        deleteBooking()
+    else:
+        for one in range(0, len(bookings_database[credentials["phone_number"]])):
+
+            if bookings_database[credentials["phone_number"]][one]["id"] == int(booking_id):
+
+                here = bookings_database[credentials["phone_number"]].pop(one)
+
+                print("Deletion Successfull!")
 
     display()
 
 def logout():
     return print("You're logged out!")
 
-menu = " 1- Login To System\n 2- Signup To system\n 3- Search for cars\n 4- Confirm Car booking\n 5- MyBookings\n 6- Logout"
+menu = " 1- Login To System\n 2- Signup To system\n 3- Search for cars\n 4- Confirm Car booking\n 5- MyBookings\n 6- DeleteBooking\n 7- Logout"
 
 func_dict = {
 
@@ -146,7 +175,8 @@ func_dict = {
     3: search,
     4: confirmBooking,
     5: myBookings,
-    6: logout
+    6: deleteBooking,
+    7: logout
 }
 
 def display():
@@ -155,7 +185,7 @@ def display():
     print(menu)
     option = int(input("Please select an option from the above menu: "))
 
-    if option in range(1, 7):
+    if option in range(1, 8):
         func_dict[option]()
     else:
         print("Wrong Selection")
