@@ -1,7 +1,7 @@
 users_id_count    = 1
 bookings_id_count = 1
 
-credentials       = {"phone_number": 00, "password": 00, "logged": True}
+credentials       = {}
 
 users_database    = {}
 bookings_database = {}
@@ -138,6 +138,46 @@ def myBookings():
 
     display()
 
+
+def editBooking():
+
+    if not credentials.get("logged"):
+        print("Please login before you confirm!")
+        display()
+
+    for booking in bookings_database.get(credentials["phone_number"]):
+        print(booking)
+
+    booking_id = input("Please Enter the ID of the booking to be updated: ")
+    menu = "1- start date\n2- end date"
+    print(menu)
+
+    to_edit = input("Please choose what you want to update from the menu: ")
+    new_value = input("Please enter the new value: ")
+
+    if not to_edit or not new_value:
+        print("Please Enter a valid data!")
+        display()
+
+    if not booking_id:
+        print("PLease Enter a valid ID!")
+        deleteBooking()
+    else:
+        for one in range(0, len(bookings_database[credentials["phone_number"]])):
+
+            if bookings_database[credentials["phone_number"]][one]["id"] == int(booking_id):
+
+                if int(to_edit) == 1:
+                    bookings_database[credentials["phone_number"]][one]["start_date"] = new_value
+
+                if int(to_edit) == 2:
+                    bookings_database[credentials["phone_number"]][one]["end_date"] = new_value
+
+                print("Updated Successfull!")
+
+    display()
+
+
 def deleteBooking():
 
     if not credentials.get("logged"):
@@ -166,7 +206,7 @@ def deleteBooking():
 def logout():
     return print("You're logged out!")
 
-menu = " 1- Login To System\n 2- Signup To system\n 3- Search for cars\n 4- Confirm Car booking\n 5- MyBookings\n 6- DeleteBooking\n 7- Logout"
+menu = " 1- Login To System\n 2- Signup To system\n 3- Search for cars\n 4- Confirm Car booking\n 5- MyBookings\n 6- UpdateBooking\n 7- DeleteBooking\n 8- Logout"
 
 func_dict = {
 
@@ -175,17 +215,28 @@ func_dict = {
     3: search,
     4: confirmBooking,
     5: myBookings,
-    6: deleteBooking,
-    7: logout
+    6: editBooking,
+    7: deleteBooking,
+    8: logout
 }
 
 def display():
 
     print("#"*7+ "    Welcome to the Car Rental System    " +  7*"#")
     print(menu)
-    option = int(input("Please select an option from the above menu: "))
+    option = input("Please select an option from the above menu: ")
 
-    if option in range(1, 8):
+    if not option:
+        print("Wrong Selection")
+        display()
+
+    try:
+        option = int(option)
+    except ValueError:
+        print("Wrong Selection!")
+        display()
+
+    if option in range(1, 9):
         func_dict[option]()
     else:
         print("Wrong Selection")
